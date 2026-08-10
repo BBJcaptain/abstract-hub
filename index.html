@@ -1,0 +1,2301 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-WngarYD+aJqr7Ym7oyWDHwVBjXD5SSFNm6FuQ1kEcME='; style-src 'sha256-I3NhJvXkC/Tl7ru/KZywT9nH3/tebbldy0eg0KJ1XZY='; img-src 'self' blob:; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>Abstract Hub</title>
+<meta name="description" content="An encrypted, offline reader. Contents are not available without a key.">
+
+<!-- iOS standalone / home-screen behaviour -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Abstract Hub">
+<meta name="format-detection" content="telephone=no">
+<meta name="theme-color" content="#f7f5f1" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#0c0e11" media="(prefers-color-scheme: dark)">
+
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png" type="image/png">
+
+<style>/* ==========================================================================
+   ABSTRACT HUB — application stylesheet
+   Inlined into index.html at build time and pinned by a CSP sha256 hash.
+   No web fonts, no external assets: everything here works offline and inside
+   a `default-src 'none'` policy.
+   ========================================================================== */
+
+/* --- Design tokens ------------------------------------------------------ */
+:root {
+  --paper:        #f7f5f1;
+  --paper-2:      #efece6;
+  --surface:      #ffffff;
+  --surface-2:    #faf9f6;
+  --ink:          #14161a;
+  --ink-2:        #3f454f;
+  --muted:        #6d7482;
+  --faint:        #9aa1ad;
+  --line:         #e2ded6;
+  --line-2:       #d3cec4;
+  --accent:       #0f7361;
+  --accent-ink:   #ffffff;
+  --accent-soft:  #e2f1ed;
+  --warn:         #9a5b06;
+  --warn-soft:    #fdf1de;
+  --danger:       #a52222;
+  --danger-soft:  #fbeaea;
+
+  --shadow-sm: 0 1px 2px rgba(20, 22, 26, .06), 0 1px 3px rgba(20, 22, 26, .04);
+  --shadow-md: 0 2px 6px rgba(20, 22, 26, .07), 0 8px 24px rgba(20, 22, 26, .07);
+  --shadow-lg: 0 10px 40px rgba(20, 22, 26, .16);
+
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 26px;
+
+  --ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+  --serif: "Iowan Old Style", "Charter", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+
+  --header-h: 52px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+  --safe-l: env(safe-area-inset-left, 0px);
+  --safe-r: env(safe-area-inset-right, 0px);
+
+  --ease: cubic-bezier(.22, .61, .36, 1);
+  color-scheme: light;
+}
+
+:root[data-theme="dark"], :root.dark {
+  --paper:        #0c0e11;
+  --paper-2:      #131619;
+  --surface:      #161a1f;
+  --surface-2:    #1d2228;
+  --ink:          #f1f2f4;
+  --ink-2:        #c9ced6;
+  --muted:        #949cab;
+  --faint:        #6b7382;
+  --line:         #262b32;
+  --line-2:       #333a43;
+  --accent:       #4ecdb0;
+  --accent-ink:   #06231d;
+  --accent-soft:  #16302b;
+  --warn:         #e0a960;
+  --warn-soft:    #2c2317;
+  --danger:       #f08b8b;
+  --danger-soft:  #331c1c;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, .45), 0 12px 32px rgba(0, 0, 0, .35);
+  --shadow-lg: 0 16px 50px rgba(0, 0, 0, .6);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:        #0c0e11;
+    --paper-2:      #131619;
+    --surface:      #161a1f;
+    --surface-2:    #1d2228;
+    --ink:          #f1f2f4;
+    --ink-2:        #c9ced6;
+    --muted:        #949cab;
+    --faint:        #6b7382;
+    --line:         #262b32;
+    --line-2:       #333a43;
+    --accent:       #4ecdb0;
+    --accent-ink:   #06231d;
+    --accent-soft:  #16302b;
+    --warn:         #e0a960;
+    --warn-soft:    #2c2317;
+    --danger:       #f08b8b;
+    --danger-soft:  #331c1c;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
+    --shadow-md: 0 2px 8px rgba(0, 0, 0, .45), 0 12px 32px rgba(0, 0, 0, .35);
+    --shadow-lg: 0 16px 50px rgba(0, 0, 0, .6);
+    color-scheme: dark;
+  }
+}
+
+/* --- Reset -------------------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--ui);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.5;
+  min-height: 100svh;
+  overscroll-behavior-y: none;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button, input, select, textarea { font: inherit; color: inherit; }
+button { background: none; border: 0; cursor: pointer; padding: 0; }
+img { display: block; max-width: 100%; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.sr {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+[hidden] { display: none !important; }
+
+/* Icon sprite: present in the DOM, absent from layout. Kept in CSS rather than
+   a style attribute so the CSP needs no style-src-attr allowance. */
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ==========================================================================
+   LOCK SCREEN
+   ========================================================================== */
+#lock {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: calc(24px + var(--safe-t)) 24px calc(24px + var(--safe-b));
+  background:
+    radial-gradient(120% 80% at 50% -10%, var(--paper-2) 0%, var(--paper) 55%);
+  z-index: 100;
+}
+
+.lock-card {
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  animation: rise .5s var(--ease) both;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.vault {
+  width: 68px; height: 68px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-md);
+  color: var(--accent);
+}
+.vault svg { width: 28px; height: 28px; }
+
+.wordmark {
+  font-family: var(--ui);
+  font-size: 13px;
+  font-weight: 680;
+  letter-spacing: .34em;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin: 0 0 6px;
+}
+
+.lock-sub {
+  font-size: 14px;
+  color: var(--muted);
+  margin: 0 0 26px;
+  line-height: 1.45;
+}
+
+.field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-md);
+  box-shadow: var(--shadow-sm);
+  transition: border-color .16s var(--ease), box-shadow .16s var(--ease);
+}
+.field:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.field input {
+  flex: 1;
+  min-width: 0;
+  padding: 14px 14px;
+  background: none;
+  border: 0;
+  outline: none;
+  font-size: 16px; /* 16px prevents the iOS zoom-on-focus */
+  letter-spacing: .02em;
+}
+.field .reveal {
+  padding: 0 14px;
+  color: var(--faint);
+  display: grid;
+  place-items: center;
+  align-self: stretch;
+}
+.field .reveal svg { width: 19px; height: 19px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 14px 18px;
+  margin-top: 12px;
+  border-radius: var(--r-md);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .01em;
+  transition: transform .12s var(--ease), opacity .16s var(--ease);
+}
+.btn:active { transform: scale(.985); }
+.btn[disabled] { opacity: .5; cursor: default; }
+.btn svg { width: 18px; height: 18px; }
+
+.btn.ghost {
+  background: transparent;
+  color: var(--ink-2);
+  border: 1px solid var(--line-2);
+}
+
+.btn.subtle {
+  background: transparent;
+  color: var(--accent);
+  border: 0;
+  font-weight: 550;
+  padding: 10px;
+}
+
+.lock-msg {
+  min-height: 20px;
+  margin-top: 14px;
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+.lock-msg.err { color: var(--danger); }
+.lock-msg.info { color: var(--muted); }
+
+.remember {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.remember input { accent-color: var(--accent); width: 16px; height: 16px; }
+
+.lock-foot {
+  margin-top: 30px;
+  font-size: 11.5px;
+  color: var(--faint);
+  letter-spacing: .02em;
+  line-height: 1.7;
+}
+
+/* Progress ring shown while the KDF grinds */
+.kdf {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.spinner {
+  width: 15px; height: 15px;
+  border: 2px solid var(--line-2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ==========================================================================
+   APP CHROME
+   ========================================================================== */
+#app { display: none; padding-bottom: calc(56px + var(--safe-b)); }
+#app.on { display: block; }
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  padding-top: var(--safe-t);
+  background: color-mix(in srgb, var(--paper) 86%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar-row {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 calc(16px + var(--safe-l)) 0 calc(16px + var(--safe-r));
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+.brand {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .26em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  margin-right: auto;
+}
+.brand em { font-style: normal; color: var(--accent); }
+
+.icon-btn {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--ink-2);
+  transition: background .14s var(--ease), color .14s var(--ease);
+}
+.icon-btn:hover { background: var(--paper-2); }
+.icon-btn:active { background: var(--line); }
+.icon-btn svg { width: 19px; height: 19px; }
+.icon-btn.on { color: var(--accent); background: var(--accent-soft); }
+
+/* Search + controls -------------------------------------------------- */
+.controls {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 0 calc(16px + var(--safe-l)) 10px calc(16px + var(--safe-r));
+  display: grid;
+  gap: 9px;
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  padding: 0 12px;
+  transition: border-color .16s var(--ease), box-shadow .16s var(--ease);
+}
+.search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+.search svg { width: 17px; height: 17px; color: var(--faint); flex: none; }
+.search input {
+  flex: 1; min-width: 0;
+  border: 0; background: none; outline: none;
+  padding: 10px 0;
+  font-size: 16px;
+}
+.search input::placeholder { color: var(--faint); }
+.search .clear { color: var(--faint); display: none; padding: 4px; }
+.search.has .clear { display: grid; }
+
+.chiprow {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+  scroll-padding-inline: 16px;
+}
+.chiprow::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex: none;
+  padding: 6px 13px;
+  border-radius: 999px;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 520;
+  white-space: nowrap;
+  transition: all .14s var(--ease);
+}
+.chip:active { transform: scale(.96); }
+.chip.on {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.chip .n {
+  font-variant-numeric: tabular-nums;
+  opacity: .55;
+  margin-left: 5px;
+  font-size: 11.5px;
+}
+
+/* Result summary bar --------------------------------------------------- */
+.bar {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px calc(16px + var(--safe-l)) 4px calc(16px + var(--safe-r));
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.bar .count {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-right: auto;
+  font-variant-numeric: tabular-nums;
+}
+.sortsel {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  padding: 5px 28px 5px 12px;
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--ink-2);
+  background-image: linear-gradient(45deg, transparent 50%, currentColor 50%), linear-gradient(135deg, currentColor 50%, transparent 50%);
+  background-position: calc(100% - 14px) calc(50% + 1px), calc(100% - 10px) calc(50% + 1px);
+  background-size: 4px 4px, 4px 4px;
+  background-repeat: no-repeat;
+}
+
+/* ==========================================================================
+   GRID + CARDS
+   ========================================================================== */
+.grid {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 12px calc(16px + var(--safe-l)) 40px calc(16px + var(--safe-r));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(148px, 1fr));
+  gap: 22px 16px;
+}
+
+@media (min-width: 700px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(168px, 1fr)); gap: 30px 22px; }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  text-align: left;
+  animation: fade .32s var(--ease) both;
+}
+@keyframes fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+.card-cover {
+  position: relative;
+  aspect-ratio: 2 / 3;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  background: var(--paper-2);
+  box-shadow: var(--shadow-md);
+  transition: transform .2s var(--ease), box-shadow .2s var(--ease);
+}
+.card:active .card-cover { transform: scale(.972); box-shadow: var(--shadow-sm); }
+@media (hover: hover) {
+  .card:hover .card-cover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+}
+.card-cover img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Thin inner edge so pale covers still read as objects on a pale page */
+.card-cover::after {
+  content: "";
+  position: absolute; inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .09);
+  pointer-events: none;
+}
+
+.badge {
+  position: absolute;
+  top: 7px; left: 7px;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: .11em;
+  text-transform: uppercase;
+  color: #fff;
+  background: rgba(12, 14, 17, .68);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.card-title {
+  font-family: var(--serif);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.28;
+  color: var(--ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.card-meta {
+  font-size: 11.5px;
+  color: var(--muted);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.35;
+}
+.card-time {
+  font-size: 10.5px;
+  color: var(--faint);
+  letter-spacing: .03em;
+}
+
+.empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty h3 { font-family: var(--serif); font-size: 19px; margin: 0 0 6px; color: var(--ink); font-weight: 600; }
+.empty p { margin: 0; font-size: 14px; }
+
+/* ==========================================================================
+   READER
+   ========================================================================== */
+#reader {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  background: var(--paper);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  transform: translateY(100%);
+  transition: transform .34s var(--ease);
+  visibility: hidden;
+}
+#reader.on { transform: none; visibility: visible; }
+
+.progress {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 2.5px;
+  z-index: 70;
+  background: transparent;
+}
+.progress i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .1s linear;
+}
+
+.reader-bar {
+  position: sticky;
+  top: 0;
+  z-index: 65;
+  padding-top: var(--safe-t);
+  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  -webkit-backdrop-filter: saturate(180%) blur(18px);
+  backdrop-filter: saturate(180%) blur(18px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .2s var(--ease);
+}
+.reader-bar.stuck { border-bottom-color: var(--line); }
+.reader-bar-row {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 calc(12px + var(--safe-l)) 0 calc(12px + var(--safe-r));
+  max-width: 780px;
+  margin: 0 auto;
+}
+.reader-bar .rt {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0;
+  transition: opacity .2s var(--ease);
+}
+.reader-bar.stuck .rt { opacity: 1; }
+
+.doc {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 0 calc(22px + var(--safe-l)) calc(80px + var(--safe-b)) calc(22px + var(--safe-r));
+}
+
+.hero { padding: 6px 0 26px; display: flex; gap: 18px; align-items: flex-start; }
+.hero-cover {
+  flex: none;
+  width: 104px;
+  aspect-ratio: 2/3;
+  border-radius: var(--r-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  background: var(--paper-2);
+}
+.hero-cover img { width: 100%; height: 100%; object-fit: cover; }
+.hero-txt { flex: 1; min-width: 0; padding-top: 2px; }
+
+.kicker {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 9px;
+}
+.doc h1 {
+  font-family: var(--serif);
+  font-size: clamp(21px, 5.4vw, 29px);
+  line-height: 1.2;
+  font-weight: 600;
+  margin: 0 0 9px;
+  letter-spacing: -.008em;
+}
+.byline { font-size: 13.5px; color: var(--ink-2); margin-bottom: 4px; }
+.subline { font-size: 12px; color: var(--faint); letter-spacing: .01em; }
+
+.keyline {
+  font-family: var(--serif);
+  font-size: 16.5px;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--ink-2);
+  padding: 16px 18px;
+  margin: 0 0 26px;
+  border-left: 2.5px solid var(--accent);
+  background: var(--surface-2);
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+}
+
+.taglist { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 28px; }
+.tag {
+  font-size: 11.5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  transition: all .14s var(--ease);
+}
+.tag:active { transform: scale(.95); }
+@media (hover: hover) { .tag:hover { color: var(--accent); border-color: var(--accent); } }
+
+/* Section navigation */
+.toc {
+  display: flex;
+  gap: 7px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  margin: 0 0 30px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--line);
+}
+.toc::-webkit-scrollbar { display: none; }
+.toc button {
+  flex: none;
+  font-size: 12.5px;
+  font-weight: 550;
+  color: var(--muted);
+  padding: 7px 2px;
+  margin-right: 9px;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color .14s var(--ease), border-color .14s var(--ease);
+}
+.toc button.on { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* Prose */
+.sec { margin: 0 0 36px; scroll-margin-top: calc(var(--header-h) + var(--safe-t) + 12px); }
+.sec > h2 {
+  font-family: var(--ui);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin: 0 0 14px;
+  padding-bottom: 9px;
+  border-bottom: 1px solid var(--line);
+}
+
+.prose { font-family: var(--serif); font-size: 17px; line-height: 1.66; color: var(--ink-2); }
+.prose p { margin: 0 0 17px; }
+.prose strong { color: var(--ink); font-weight: 650; }
+.prose em { font-style: italic; }
+.prose h3 { font-family: var(--serif); font-size: 18px; color: var(--ink); margin: 26px 0 10px; font-weight: 600; }
+
+.prose ul, .prose ol { margin: 0 0 17px; padding-left: 0; list-style: none; counter-reset: n; }
+.prose li { position: relative; padding-left: 27px; margin-bottom: 13px; }
+.prose ul > li::before {
+  content: "";
+  position: absolute;
+  left: 8px; top: .68em;
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.prose ol { counter-reset: n; }
+.prose ol > li { counter-increment: n; }
+.prose ol > li::before {
+  content: counter(n);
+  position: absolute;
+  left: 0; top: .12em;
+  font-family: var(--ui);
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent);
+  width: 19px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.prose blockquote {
+  margin: 0 0 17px;
+  padding: 2px 0 2px 18px;
+  border-left: 2px solid var(--line-2);
+  color: var(--ink);
+  font-style: italic;
+}
+
+.doc-foot {
+  margin-top: 40px;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  font-size: 11.5px;
+  color: var(--faint);
+  line-height: 1.7;
+}
+
+/* ==========================================================================
+   SHEETS (topics / sort / about)
+   ========================================================================== */
+.scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(10, 12, 15, .42);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .24s var(--ease), visibility .24s var(--ease);
+}
+.scrim.on { opacity: 1; visibility: visible; }
+
+.sheet {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 81;
+  max-height: 78svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(101%);
+  transition: transform .3s var(--ease);
+  padding-bottom: var(--safe-b);
+}
+.sheet.on { transform: none; }
+
+@media (min-width: 700px) {
+  .sheet {
+    left: 50%; right: auto; bottom: auto; top: 50%;
+    width: min(520px, 92vw);
+    max-height: 76svh;
+    border-radius: var(--r-lg);
+    transform: translate(-50%, -46%) scale(.97);
+    opacity: 0;
+    transition: transform .24s var(--ease), opacity .24s var(--ease);
+  }
+  .sheet.on { transform: translate(-50%, -50%); opacity: 1; }
+}
+
+.sheet-grab {
+  width: 36px; height: 4px;
+  border-radius: 2px;
+  background: var(--line-2);
+  margin: 9px auto 2px;
+}
+@media (min-width: 700px) { .sheet-grab { display: none; } }
+
+.sheet-head {
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--line);
+}
+.sheet-head h2 {
+  font-size: 15px;
+  font-weight: 640;
+  margin: 0;
+  margin-right: auto;
+}
+.sheet-body {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  padding: 14px 20px 22px;
+}
+
+.opt {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  width: 100%;
+  padding: 12px 2px;
+  font-size: 14.5px;
+  color: var(--ink-2);
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+.opt:last-child { border-bottom: 0; }
+.opt .tick { width: 17px; height: 17px; color: var(--accent); opacity: 0; flex: none; }
+.opt.on { color: var(--accent); font-weight: 580; }
+.opt.on .tick { opacity: 1; }
+
+.tagcloud { display: flex; flex-wrap: wrap; gap: 7px; }
+
+.about-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 9px 0;
+  font-size: 13px;
+  border-bottom: 1px solid var(--line);
+}
+.about-row:last-child { border-bottom: 0; }
+.about-row dt { color: var(--muted); margin: 0; }
+.about-row dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; color: var(--ink); }
+.about-note { margin-top: 16px; font-size: 12px; line-height: 1.65; color: var(--muted); }
+
+/* ==========================================================================
+   BANNERS + FOOTER
+   ========================================================================== */
+.banner {
+  max-width: 1180px;
+  margin: 10px auto 0;
+  padding: 11px 15px;
+  border-radius: var(--r-sm);
+  font-size: 13px;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.banner svg { width: 17px; height: 17px; flex: none; margin-top: 1px; }
+.banner.warn { background: var(--warn-soft); color: var(--warn); }
+.banner.danger { background: var(--danger-soft); color: var(--danger); }
+.banner.good { background: var(--accent-soft); color: var(--accent); }
+.banner .act { margin-left: auto; font-weight: 640; text-decoration: underline; white-space: nowrap; }
+
+.appfoot {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 30;
+  padding: 8px calc(16px + var(--safe-l)) calc(8px + var(--safe-b)) calc(16px + var(--safe-r));
+  background: color-mix(in srgb, var(--paper) 90%, transparent);
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  font-size: 10.5px;
+  color: var(--faint);
+  letter-spacing: .03em;
+  font-variant-numeric: tabular-nums;
+}
+.appfoot .dot { color: var(--line-2); }
+.appfoot .mismatch { color: var(--warn); font-weight: 640; }
+
+/* --- Motion preferences ------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+  }
+  #reader { transition: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===================================================================== -->
+<!-- Icon sprite. Static markup, so referencing it via <use> never involves -->
+<!-- parsing a string as HTML.                                              -->
+<!-- ===================================================================== -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <defs>
+    <symbol id="i-lock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="4" y="10.5" width="16" height="10.5" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/><circle cx="12" cy="15.8" r="1.3" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="3"/>
+    </symbol>
+    <symbol id="i-eyeoff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M9.9 5.8A9.9 9.9 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a17 17 0 0 1-3.2 4"/><path d="M6.3 7.9A17 17 0 0 0 2.5 12S6 18.5 12 18.5a9.6 9.6 0 0 0 4-.85"/><path d="m3 3 18 18"/><path d="M9.9 10a3 3 0 0 0 4.2 4.2"/>
+    </symbol>
+    <symbol id="i-faceid" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 8.5V6a2 2 0 0 1 2-2h2.5M15.5 4H18a2 2 0 0 1 2 2v2.5M20 15.5V18a2 2 0 0 1-2 2h-2.5M8.5 20H6a2 2 0 0 1-2-2v-2.5"/><path d="M9 10v1.5M15 10v1.5M12 10v3.2h-.9"/><path d="M9.4 15.8a3.6 3.6 0 0 0 5.2 0"/>
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.3-4.3"/>
+    </symbol>
+    <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M6 6l12 12M18 6L6 18"/>
+    </symbol>
+    <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="m4.5 12.5 5 5 10-11"/>
+    </symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 4.5 2.8 20h18.4L12 4.5Z"/><path d="M12 10v4"/><circle cx="12" cy="17" r=".9" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-info" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/><path d="M12 11.2v5"/><circle cx="12" cy="8" r=".9" fill="currentColor" stroke="none"/>
+    </symbol>
+    <symbol id="i-back" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14.5 5 7.5 12l7 7"/>
+    </symbol>
+    <symbol id="i-topics" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 7h16M4 12h16M4 17h9"/>
+    </symbol>
+    <symbol id="i-theme" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 13.2A8 8 0 0 1 10.8 4a8.3 8.3 0 1 0 9.2 9.2Z"/>
+    </symbol>
+  </defs>
+</svg>
+
+<!-- ===================================================================== -->
+<!-- LOCK SCREEN                                                           -->
+<!-- ===================================================================== -->
+<div id="lock">
+  <main class="lock-card">
+    <div class="vault"><svg aria-hidden="true"><use href="#i-lock"/></svg></div>
+    <h1 class="wordmark">Abstract&nbsp;Hub</h1>
+    <p class="lock-sub">This library is encrypted.<br>Enter your passphrase to read it.</p>
+
+    <div class="field">
+      <label class="sr" for="pw">Passphrase</label>
+      <input id="pw" type="password" autocomplete="current-password" autocapitalize="off"
+             autocorrect="off" spellcheck="false" enterkeyhint="go" placeholder="Passphrase">
+      <button id="reveal" class="reveal" type="button" aria-label="Show passphrase">
+        <svg aria-hidden="true"><use id="revealicon" href="#i-eye"/></svg>
+      </button>
+    </div>
+
+    <button id="unlock" class="btn" type="button">
+      <svg aria-hidden="true"><use href="#i-lock"/></svg>Unlock
+    </button>
+
+    <button id="bio" class="btn ghost" type="button" hidden>
+      <svg aria-hidden="true"><use href="#i-faceid"/></svg>Unlock with Face ID
+    </button>
+
+    <div id="lockmsg" class="lock-msg" role="status" aria-live="polite"></div>
+
+    <label id="rememberwrap" class="remember" hidden>
+      <input id="remember" type="checkbox">
+      Enable Face ID unlock on this device
+    </label>
+
+    <p class="lock-foot">
+      AES-256-GCM · PBKDF2-HMAC-SHA512<br>
+      Decrypted only in memory, only on this device.
+    </p>
+  </main>
+</div>
+
+<!-- ===================================================================== -->
+<!-- LIBRARY                                                               -->
+<!-- ===================================================================== -->
+<div id="app">
+  <header class="topbar">
+    <div class="topbar-row">
+      <div class="brand">Abstract&nbsp;<em>Hub</em></div>
+      <button id="topics" class="icon-btn" type="button" aria-label="Browse topics"><svg aria-hidden="true"><use href="#i-topics"/></svg></button>
+      <button id="theme" class="icon-btn" type="button" aria-label="Toggle dark mode"><svg aria-hidden="true"><use href="#i-theme"/></svg></button>
+      <button id="about" class="icon-btn" type="button" aria-label="About this library"><svg aria-hidden="true"><use href="#i-info"/></svg></button>
+      <button id="lockbtn" class="icon-btn" type="button" aria-label="Lock the library"><svg aria-hidden="true"><use href="#i-lock"/></svg></button>
+    </div>
+
+    <div class="controls">
+      <div id="search" class="search">
+        <svg aria-hidden="true"><use href="#i-search"/></svg>
+        <label class="sr" for="q">Search abstracts</label>
+        <input id="q" type="search" placeholder="Search titles, authors, text…" autocomplete="off"
+               autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
+        <button id="qclear" class="clear" type="button" aria-label="Clear search"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+      </div>
+      <div id="chips" class="chiprow" role="group" aria-label="Filter by type and category"></div>
+    </div>
+  </header>
+
+  <div id="banners"></div>
+
+  <div class="bar">
+    <span id="count" class="count"></span>
+    <label class="sr" for="sort">Sort order</label>
+    <select id="sort" class="sortsel"></select>
+  </div>
+
+  <main id="grid" class="grid"></main>
+
+  <footer class="appfoot">
+    <span id="vapp">App v—</span>
+    <span class="dot">·</span>
+    <span id="vlib">Lib —</span>
+  </footer>
+</div>
+
+<!-- ===================================================================== -->
+<!-- READER                                                                -->
+<!-- ===================================================================== -->
+<div id="reader" role="dialog" aria-modal="true" aria-label="Abstract">
+  <div class="progress"><i></i></div>
+  <div id="readerbar" class="reader-bar">
+    <div class="reader-bar-row">
+      <button id="back" class="icon-btn" type="button" aria-label="Back to library"><svg aria-hidden="true"><use href="#i-back"/></svg></button>
+      <span id="readertitle" class="rt"></span>
+    </div>
+  </div>
+  <article id="doc" class="doc"></article>
+</div>
+
+<!-- ===================================================================== -->
+<!-- SHEET                                                                 -->
+<!-- ===================================================================== -->
+<div id="scrim" class="scrim"></div>
+<div id="sheet" class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheettitle">
+  <div class="sheet-grab"></div>
+  <div class="sheet-head">
+    <h2 id="sheettitle">Options</h2>
+    <button id="sheetclose" class="icon-btn" type="button" aria-label="Close"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
+  </div>
+  <div id="sheetbody" class="sheet-body"></div>
+</div>
+
+<script>/* ==========================================================================
+   ABSTRACT HUB — client runtime
+   Inlined into index.html at build time and pinned by a CSP sha256 hash.
+
+   SECURITY INVARIANTS (these are load-bearing; do not relax them casually)
+   -----------------------------------------------------------------------
+   1. No innerHTML / outerHTML / insertAdjacentHTML / document.write anywhere.
+      All content reaches the DOM through createElement + textContent, so
+      abstract text cannot become markup. (OWASP A03.)
+   2. No network destination other than same-origin relative paths. The CSP
+      pins connect-src to 'self'; there is nothing to exfiltrate to.
+   3. Plaintext lives in RAM only. It is dropped on lock, on inactivity
+      timeout, and on page hide. Only ciphertext is persisted.
+   4. The passphrase is held for the session so a library update can be
+      re-derived; it is zeroed on lock along with everything else.
+   ========================================================================== */
+'use strict';
+
+(() => {
+  // ---- Build-injected constants (replaced by build-library.js) -----------
+  const APP_VERSION = '1.0';
+  const LIB_VERSION = '2026v1';
+  const BUILT_AT = '2026-08-10T17:17:19Z';
+  const ENC_PATH = 'library.enc';
+
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  const AUTO_LOCK_MS = 15 * 60 * 1000;
+
+  // Fixed PRF input. Any constant works; it only needs to be stable so the
+  // authenticator returns the same secret for this application every time.
+  const PRF_INFO = new TextEncoder().encode('abstract-hub/prf/v1');
+
+  // ---- Tiny DOM helpers --------------------------------------------------
+  const $ = (sel, root = document) => root.querySelector(sel);
+  const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
+
+  function el(tag, className, text) {
+    const node = document.createElement(tag);
+    if (className) node.className = className;
+    if (text !== undefined && text !== null) node.textContent = String(text);
+    return node;
+  }
+
+  /** Reference a symbol from the static sprite baked into index.html. */
+  function icon(id, className) {
+    const svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('aria-hidden', 'true');
+    if (className) svg.setAttribute('class', className);
+    const use = document.createElementNS(SVGNS, 'use');
+    use.setAttribute('href', `#${id}`);
+    svg.appendChild(use);
+    return svg;
+  }
+
+  const clear = (node) => { while (node.firstChild) node.removeChild(node.firstChild); };
+
+  // ---- Session state -----------------------------------------------------
+  const S = {
+    library: null,       // decrypted index
+    covers: [],          // object URLs, revoked on lock
+    passphrase: null,    // kept for the session so updates can re-derive
+    filters: { q: '', cats: new Set(), types: new Set(), tags: new Set() },
+    sort: 'added-desc',
+    view: [],            // current filtered + sorted item list
+    lockTimer: null,
+    serverManifest: null,
+  };
+
+  // =========================================================================
+  // IndexedDB — ciphertext and the wrapped passphrase only
+  // =========================================================================
+  const DB_NAME = 'abstract-hub';
+  const DB_VERSION = 1;
+  const STORE = 'vault';
+
+  function openDb() {
+    return new Promise((resolve, reject) => {
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE)) db.createObjectStore(STORE);
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error('IndexedDB unavailable'));
+      req.onblocked = () => reject(new Error('IndexedDB blocked by another tab'));
+    });
+  }
+
+  async function idbGet(key) {
+    const db = await openDb();
+    try {
+      return await new Promise((resolve, reject) => {
+        const req = db.transaction(STORE, 'readonly').objectStore(STORE).get(key);
+        req.onsuccess = () => resolve(req.result ?? null);
+        req.onerror = () => reject(req.error);
+      });
+    } finally { db.close(); }
+  }
+
+  async function idbSet(key, value) {
+    const db = await openDb();
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE, 'readwrite');
+        tx.objectStore(STORE).put(value, key);
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  }
+
+  async function idbDel(key) {
+    const db = await openDb();
+    try {
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE, 'readwrite');
+        tx.objectStore(STORE).delete(key);
+        tx.oncomplete = resolve;
+        tx.onerror = () => reject(tx.error);
+      });
+    } finally { db.close(); }
+  }
+
+  // =========================================================================
+  // Container format — must mirror build/lib/container.js exactly
+  // =========================================================================
+  const MAGIC = [0x41, 0x42, 0x53, 0x54, 0x48, 0x55, 0x42]; // 'ABSTHUB'
+  const HEADER_BYTES = 58;
+  const TAG_BYTES = 16;
+
+  function parseHeader(bytes) {
+    if (bytes.length < HEADER_BYTES + TAG_BYTES) throw new Error('Library file is truncated.');
+    for (let i = 0; i < MAGIC.length; i++) {
+      if (bytes[i] !== MAGIC[i]) throw new Error('Library file is not a valid Abstract Hub container.');
+    }
+    const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+    const version = view.getUint8(7);
+    if (version !== 1) throw new Error(`Library container version ${version} is newer than this app understands. Update the app.`);
+    const kdfId = view.getUint8(8);
+    if (kdfId !== 1) throw new Error(`Unsupported key-derivation id ${kdfId}.`);
+    const iterations = view.getUint32(9, false);
+    const codec = view.getUint8(13);
+    if (codec !== 1) throw new Error(`Unsupported payload codec ${codec}.`);
+
+    return {
+      iterations,
+      salt: bytes.slice(14, 46),
+      iv: bytes.slice(46, 58),
+      aad: bytes.slice(0, HEADER_BYTES),
+      body: bytes.subarray(HEADER_BYTES), // ciphertext || tag, as WebCrypto expects
+    };
+  }
+
+  /** PBKDF2-HMAC-SHA512 -> raw 256-bit key material. */
+  async function deriveKeyBits(passphrase, salt, iterations) {
+    const base = await crypto.subtle.importKey(
+      'raw', new TextEncoder().encode(passphrase), 'PBKDF2', false, ['deriveBits']
+    );
+    return new Uint8Array(await crypto.subtle.deriveBits(
+      { name: 'PBKDF2', salt, iterations, hash: 'SHA-512' }, base, 256
+    ));
+  }
+
+  async function gunzip(bytes) {
+    if (typeof DecompressionStream !== 'function') {
+      throw new Error('This browser lacks DecompressionStream. iOS 16.4 or newer is required.');
+    }
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
+  /**
+   * Decrypt a container and unpack it.
+   * @returns {{index: object, blobRegion: Uint8Array}}
+   */
+  async function openContainer(bytes, passphrase, onProgress) {
+    const h = parseHeader(bytes);
+    if (onProgress) onProgress(`Deriving key (${h.iterations.toLocaleString()} rounds)…`);
+
+    // Yield a frame so the spinner paints before the KDF blocks the thread.
+    await new Promise((r) => setTimeout(r, 16));
+
+    const raw = await deriveKeyBits(passphrase, h.salt, h.iterations);
+    let key;
+    try {
+      key = await crypto.subtle.importKey('raw', raw, 'AES-GCM', false, ['decrypt']);
+    } finally {
+      raw.fill(0);
+    }
+
+    if (onProgress) onProgress('Decrypting…');
+    let plain;
+    try {
+      plain = new Uint8Array(await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv: h.iv, additionalData: h.aad, tagLength: TAG_BYTES * 8 },
+        key, h.body
+      ));
+    } catch {
+      // GCM gives no detail by design; a wrong passphrase and a tampered file
+      // are indistinguishable here, which is the correct behaviour.
+      throw new Error('WRONG_KEY');
+    }
+
+    const view = new DataView(plain.buffer, plain.byteOffset, plain.byteLength);
+    const indexLen = view.getUint32(0, false);
+    if (indexLen > plain.length - 4) throw new Error('Corrupt payload: index length out of range.');
+
+    const index = JSON.parse(new TextDecoder().decode(await gunzip(plain.subarray(4, 4 + indexLen))));
+    return { index, blobRegion: plain.subarray(4 + indexLen) };
+  }
+
+  // =========================================================================
+  // WebAuthn PRF — Face ID / Touch ID unlock
+  // =========================================================================
+  const WRAP_KEY = 'faceid';
+
+  const prfSupported = () =>
+    window.isSecureContext &&
+    typeof PublicKeyCredential === 'function' &&
+    typeof navigator.credentials?.create === 'function';
+
+  /**
+   * Is there actually a Face ID / Touch ID authenticator on this device?
+   *
+   * prfSupported() only proves the API exists. This asks the platform whether a
+   * user-verifying authenticator is really present, so we never offer Face ID on
+   * a device that cannot do it and then fail at the prompt.
+   */
+  async function platformAuthenticatorAvailable() {
+    if (!prfSupported()) return false;
+    try {
+      return await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();
+    } catch {
+      return false;
+    }
+  }
+
+  const randomBytes = (n) => crypto.getRandomValues(new Uint8Array(n));
+
+  /** HKDF the raw PRF secret into an AES-GCM wrapping key. */
+  async function wrappingKeyFrom(prfSecret) {
+    const base = await crypto.subtle.importKey('raw', prfSecret, 'HKDF', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+      { name: 'HKDF', hash: 'SHA-256', salt: new Uint8Array(32), info: PRF_INFO },
+      base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']
+    );
+  }
+
+  async function prfAssert(credentialId) {
+    const options = {
+      challenge: randomBytes(32),
+      userVerification: 'required',
+      timeout: 60000,
+      extensions: { prf: { eval: { first: PRF_INFO } } },
+    };
+    if (credentialId) options.allowCredentials = [{ type: 'public-key', id: credentialId }];
+
+    const assertion = await navigator.credentials.get({ publicKey: options });
+    const results = assertion?.getClientExtensionResults?.().prf?.results;
+    if (!results?.first) throw new Error('This device did not return a PRF secret.');
+    return new Uint8Array(results.first);
+  }
+
+  /**
+   * Enrol biometric unlock.
+   *
+   * Design note: this wraps the PASSPHRASE, not the derived content key. Every
+   * build uses a fresh salt, so a stored content key would go stale the moment
+   * the library is updated. Wrapping the passphrase means biometric unlock keeps
+   * working across library versions -- the same trade-off a password manager
+   * makes. The wrapped value is bound to a platform authenticator that requires
+   * user verification, so it is protected by the Secure Enclave.
+   */
+  async function enrolBiometric(passphrase) {
+    const credential = await navigator.credentials.create({
+      publicKey: {
+        challenge: randomBytes(32),
+        rp: { name: 'Abstract Hub' },
+        user: { id: randomBytes(16), name: 'vault', displayName: 'Abstract Hub' },
+        pubKeyCredParams: [{ type: 'public-key', alg: -7 }, { type: 'public-key', alg: -257 }],
+        authenticatorSelection: {
+          authenticatorAttachment: 'platform',
+          residentKey: 'required',
+          userVerification: 'required',
+        },
+        extensions: { prf: {} },
+        timeout: 60000,
+        attestation: 'none',
+      },
+    });
+    if (!credential) throw new Error('Enrolment was cancelled.');
+
+    // PRF is what lets the authenticator hand us a stable secret to wrap the
+    // passphrase with. Without it there is no biometric unlock, only a stray
+    // passkey the user may want to delete in Settings.
+    const ext = credential.getClientExtensionResults();
+    if (ext.prf?.enabled === false || !('prf' in ext)) {
+      throw new Error(
+        'This device does not support the WebAuthn PRF extension, which Face ID unlock needs. ' +
+        'iOS 18 or newer is required. A passkey may have been created; you can remove it in ' +
+        'Settings → Passwords.'
+      );
+    }
+
+    const credentialId = new Uint8Array(credential.rawId);
+    const secret = await prfAssert(credentialId);
+    let wrapped, iv;
+    try {
+      const wk = await wrappingKeyFrom(secret);
+      iv = randomBytes(12);
+      wrapped = new Uint8Array(await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv }, wk, new TextEncoder().encode(passphrase)
+      ));
+    } finally {
+      secret.fill(0);
+    }
+
+    await idbSet(WRAP_KEY, { credentialId, wrapped, iv, created: Date.now() });
+  }
+
+  async function unlockBiometric() {
+    const record = await idbGet(WRAP_KEY);
+    if (!record) throw new Error('No biometric credential is enrolled on this device.');
+    const secret = await prfAssert(record.credentialId);
+    try {
+      const wk = await wrappingKeyFrom(secret);
+      const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: record.iv }, wk, record.wrapped);
+      return new TextDecoder().decode(plain);
+    } finally {
+      secret.fill(0);
+    }
+  }
+
+  // =========================================================================
+  // Fetching the encrypted library
+  // =========================================================================
+  const BLOB_KEY = 'blob';
+
+  async function fetchManifest() {
+    try {
+      const res = await fetch('manifest.json', { cache: 'no-store' });
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null; // offline: not an error
+    }
+  }
+
+  /**
+   * Return the ciphertext, preferring the cached copy so a cold offline launch
+   * is instant. Refresh happens separately, after unlock.
+   */
+  async function loadCiphertext() {
+    const cached = await idbGet(BLOB_KEY).catch(() => null);
+    if (cached?.bytes) return { bytes: new Uint8Array(cached.bytes), etag: cached.etag, fromCache: true };
+
+    const res = await fetch(ENC_PATH, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`Could not download the library (HTTP ${res.status}).`);
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    await idbSet(BLOB_KEY, { bytes, etag: res.headers.get('etag'), at: Date.now() }).catch(() => {});
+    return { bytes, etag: res.headers.get('etag'), fromCache: false };
+  }
+
+  /**
+   * A refresh kicked off at page load, so an unlock can pick up a new library
+   * on this launch rather than the next one. Held here so doUnlock can wait a
+   * moment for it without ever depending on it.
+   */
+  let bootRefresh = null;
+
+  /** Conditional re-download; returns fresh bytes only when the blob changed. */
+  async function refreshCiphertext() {
+    const cached = await idbGet(BLOB_KEY).catch(() => null);
+    const headers = cached?.etag ? { 'If-None-Match': cached.etag } : undefined;
+    const res = await fetch(ENC_PATH, { cache: 'no-store', headers });
+    if (res.status === 304) return null;
+    if (!res.ok) throw new Error(`Refresh failed (HTTP ${res.status}).`);
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    await idbSet(BLOB_KEY, { bytes, etag: res.headers.get('etag'), at: Date.now() }).catch(() => {});
+    return bytes;
+  }
+
+  // =========================================================================
+  // Lock screen
+  // =========================================================================
+  const lockEl = $('#lock');
+  const appEl = $('#app');
+  const pwInput = $('#pw');
+  const unlockBtn = $('#unlock');
+  const bioBtn = $('#bio');
+  const lockMsg = $('#lockmsg');
+  const rememberWrap = $('#rememberwrap');
+  const rememberBox = $('#remember');
+
+  function setMsg(text, kind) {
+    lockMsg.className = `lock-msg ${kind || ''}`;
+    clear(lockMsg);
+    if (text) lockMsg.appendChild(document.createTextNode(text));
+  }
+
+  function setBusy(text) {
+    clear(lockMsg);
+    lockMsg.className = 'kdf';
+    if (text) {
+      lockMsg.appendChild(el('span', 'spinner'));
+      lockMsg.appendChild(el('span', null, text));
+    }
+  }
+
+  async function doUnlock(passphrase, opts = {}) {
+    if (!passphrase) { setMsg('Enter your passphrase.', 'err'); return; }
+    unlockBtn.disabled = true;
+    bioBtn.disabled = true;
+
+    try {
+      setBusy('Fetching library…');
+
+      // The library changes several times a week, so give the load-time refresh
+      // a moment to land. Without this you would unlock into yesterday's copy,
+      // then be asked to update, then pay a second 600k-round derivation.
+      // Strictly best-effort: a slow or absent network must never delay unlock,
+      // which is the whole point of being offline-first.
+      if (bootRefresh) {
+        await Promise.race([bootRefresh, new Promise((r) => setTimeout(r, 2500))]);
+      }
+
+      const { bytes } = await loadCiphertext();
+      const { index, blobRegion } = await openContainer(bytes, passphrase, setBusy);
+
+      setBusy('Preparing…');
+      mountLibrary(index, blobRegion);
+      S.passphrase = passphrase;
+
+      // Enrolment is optional and must never block entry, but its outcome has
+      // to be visible: silently failing would leave you believing Face ID is on
+      // and discovering otherwise at the next launch.
+      let enrolment = null;
+      if (opts.enrol && rememberBox.checked) {
+        try {
+          setBusy('Setting up Face ID…');
+          await enrolBiometric(passphrase);
+          enrolment = { ok: true };
+        } catch (err) {
+          enrolment = { ok: false, message: err.name === 'NotAllowedError'
+            ? 'Face ID setup was cancelled or timed out. You can try again from About.'
+            : err.message };
+        }
+      }
+
+      pwInput.value = '';
+      setMsg('', '');
+      showApp();
+
+      if (enrolment?.ok) {
+        banner('good', 'Face ID unlock is on for this device.');
+      } else if (enrolment) {
+        banner('warn', `Face ID was not set up. ${enrolment.message}`);
+      }
+
+      refreshInBackground();
+    } catch (err) {
+      if (err.message === 'WRONG_KEY') {
+        setMsg('That passphrase does not unlock this library.', 'err');
+      } else {
+        setMsg(err.message || 'Unlock failed.', 'err');
+      }
+      pwInput.select();
+    } finally {
+      unlockBtn.disabled = false;
+      bioBtn.disabled = false;
+    }
+  }
+
+  function showApp() {
+    lockEl.hidden = true;
+    appEl.classList.add('on');
+    armAutoLock();
+  }
+
+  function lock(reason) {
+    // Drop every trace of plaintext.
+    for (const url of S.covers) URL.revokeObjectURL(url);
+    S.covers = [];
+    S.library = null;
+    S.passphrase = null;
+    S.view = [];
+    S.filters = { q: '', cats: new Set(), types: new Set(), tags: new Set() };
+    clearTimeout(S.lockTimer);
+
+    closeReader(true);
+    closeSheet();
+    // Clear every node that can hold decrypted prose. Emptying the grid alone
+    // is not enough: the reader keeps the last-opened abstract in the DOM, and
+    // a hidden element is still fully readable to anyone with the device.
+    clear($('#grid'));
+    clear(docEl);
+    clear($('#sheetbody'));
+    clear($('#banners'));
+    $('#readertitle').textContent = '';
+    $('#count').textContent = '';
+    appEl.classList.remove('on');
+    lockEl.hidden = false;
+    pwInput.value = '';
+    setMsg(reason || '', reason ? 'info' : '');
+    detectBiometric();
+  }
+
+  function armAutoLock() {
+    clearTimeout(S.lockTimer);
+    if (!S.library) return;
+    S.lockTimer = setTimeout(() => lock('Locked automatically after 15 minutes of inactivity.'), AUTO_LOCK_MS);
+  }
+
+  async function detectBiometric() {
+    const record = await idbGet(WRAP_KEY).catch(() => null);
+    const platform = await platformAuthenticatorAvailable();
+    // Offer the unlock button only once something is enrolled; offer the
+    // enrolment checkbox only while nothing is.
+    bioBtn.hidden = !(record && platform);
+    rememberWrap.hidden = Boolean(record) || !platform;
+  }
+
+  // =========================================================================
+  // Mounting the decrypted library
+  // =========================================================================
+  function mountLibrary(index, blobRegion) {
+    S.library = index;
+    S.covers = [];
+
+    for (const item of index.items) {
+      // Build one object URL per cover from a slice of the decrypted region.
+      if (item.cover && item.cover.l > 0) {
+        const slice = blobRegion.subarray(item.cover.o, item.cover.o + item.cover.l);
+        const url = URL.createObjectURL(new Blob([slice], { type: 'image/webp' }));
+        S.covers.push(url);
+        item._cover = url;
+      }
+      // Search haystack, built once here rather than shipped in the payload.
+      item._hay = [
+        item.title, item.author, item.summary, item.type,
+        item.categories.join(' '), item.tags.join(' '),
+        item.sections.map((s) => `${s.h} ${sectionText(s)}`).join(' '),
+      ].join(' ').toLowerCase();
+    }
+
+    buildFacets();
+    applyFilters();
+    updateFooter();
+  }
+
+  function sectionText(section) {
+    const out = [];
+    const walkInline = (node) => {
+      if (typeof node === 'string') { out.push(node); return; }
+      if (Array.isArray(node)) {
+        if (node[0] === 'b' || node[0] === 'i') { walkInline(node[1]); return; }
+        node.forEach(walkInline);
+      }
+    };
+    for (const block of section.blocks) {
+      if (block[0] === 'p' || block[0] === 'q') walkInline(block[1]);
+      else if (block[0] === 'h') walkInline(block[2]);
+      else if (block[0] === 'ul' || block[0] === 'ol') block[1].forEach(walkInline);
+    }
+    return out.join(' ');
+  }
+
+  // =========================================================================
+  // Facets, filtering, sorting
+  // =========================================================================
+  const facets = { cats: new Map(), types: new Map(), tags: new Map() };
+
+  function buildFacets() {
+    facets.cats.clear(); facets.types.clear(); facets.tags.clear();
+    for (const item of S.library.items) {
+      facets.types.set(item.type, (facets.types.get(item.type) || 0) + 1);
+      for (const c of item.categories) facets.cats.set(c, (facets.cats.get(c) || 0) + 1);
+      for (const t of item.tags) facets.tags.set(t, (facets.tags.get(t) || 0) + 1);
+    }
+    renderChips();
+  }
+
+  const byCountThenName = (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]);
+
+  function renderChips() {
+    const row = $('#chips');
+    clear(row);
+
+    const all = el('button', `chip${S.filters.cats.size || S.filters.types.size || S.filters.tags.size ? '' : ' on'}`);
+    all.appendChild(document.createTextNode('All'));
+    all.addEventListener('click', () => {
+      S.filters.cats.clear(); S.filters.types.clear(); S.filters.tags.clear();
+      renderChips(); applyFilters();
+    });
+    row.appendChild(all);
+
+    for (const [type, count] of [...facets.types.entries()].sort(byCountThenName)) {
+      row.appendChild(makeChip(type.charAt(0) + type.slice(1).toLowerCase() + 's', count, S.filters.types, type));
+    }
+    for (const [cat, count] of [...facets.cats.entries()].sort(byCountThenName)) {
+      row.appendChild(makeChip(shortCat(cat), count, S.filters.cats, cat));
+    }
+  }
+
+  /** Category names are long; the chip row needs the short form. */
+  function shortCat(name) {
+    return name.replace(/ & .*/, '').replace(/^(Cybersecurity|Geopolitics|Leadership|History|Technology|Economics|Aviation)$/, '$1');
+  }
+
+  function makeChip(label, count, set, value) {
+    const on = set.has(value);
+    const chip = el('button', `chip${on ? ' on' : ''}`);
+    chip.appendChild(document.createTextNode(label));
+    chip.appendChild(el('span', 'n', count));
+    chip.setAttribute('aria-pressed', String(on));
+    chip.addEventListener('click', () => {
+      if (set.has(value)) set.delete(value); else set.add(value);
+      renderChips(); applyFilters();
+    });
+    return chip;
+  }
+
+  const SORTS = {
+    'added-desc':  { label: 'Recently added',    fn: (a, b) => (b.added || '').localeCompare(a.added || '') || a.title.localeCompare(b.title) },
+    'pub-desc':    { label: 'Newest published',  fn: (a, b) => (b.date || '').localeCompare(a.date || '') },
+    'pub-asc':     { label: 'Oldest published',  fn: (a, b) => (a.date || '').localeCompare(b.date || '') },
+    'title-asc':   { label: 'Title A–Z',         fn: (a, b) => a.title.localeCompare(b.title) },
+    'author-asc':  { label: 'Author A–Z',        fn: (a, b) => a.author.localeCompare(b.author) || a.title.localeCompare(b.title) },
+    'type-asc':    { label: 'Type',              fn: (a, b) => a.type.localeCompare(b.type) || a.title.localeCompare(b.title) },
+    'time-asc':    { label: 'Shortest read',     fn: (a, b) => a.minutes - b.minutes },
+  };
+
+  function applyFilters() {
+    const { q, cats, types, tags } = S.filters;
+    const needles = q.trim().toLowerCase().split(/\s+/).filter(Boolean);
+
+    S.view = S.library.items.filter((item) => {
+      if (types.size && !types.has(item.type)) return false;
+      if (cats.size && !item.categories.some((c) => cats.has(c))) return false;
+      if (tags.size && !item.tags.some((t) => tags.has(t))) return false;
+      return needles.every((n) => item._hay.includes(n));
+    });
+
+    S.view.sort(SORTS[S.sort].fn);
+    renderGrid();
+  }
+
+  // =========================================================================
+  // Grid
+  // =========================================================================
+  function renderGrid() {
+    const grid = $('#grid');
+    clear(grid);
+
+    const activeTags = [...S.filters.tags];
+    if (activeTags.length) {
+      const strip = el('div', 'taglist');
+      strip.style.gridColumn = '1 / -1';
+      for (const tag of activeTags) {
+        const btn = el('button', 'tag');
+        btn.appendChild(document.createTextNode(`# ${tag}  ✕`));
+        btn.addEventListener('click', () => { S.filters.tags.delete(tag); applyFilters(); });
+        strip.appendChild(btn);
+      }
+      grid.appendChild(strip);
+    }
+
+    $('#count').textContent = S.view.length === S.library.items.length
+      ? `${S.view.length} abstracts`
+      : `${S.view.length} of ${S.library.items.length}`;
+
+    if (!S.view.length) {
+      const empty = el('div', 'empty');
+      empty.appendChild(el('h3', null, 'Nothing matches'));
+      empty.appendChild(el('p', null, 'Try a different search term, or clear the filters.'));
+      grid.appendChild(empty);
+      return;
+    }
+
+    const frag = document.createDocumentFragment();
+    S.view.forEach((item, i) => frag.appendChild(makeCard(item, i)));
+    grid.appendChild(frag);
+  }
+
+  function makeCard(item, i) {
+    const card = el('button', 'card');
+    card.setAttribute('aria-label', `${item.title} by ${item.author}`);
+    // Stagger only the first screenful; beyond that the delay is wasted time.
+    if (i < 12) card.style.animationDelay = `${Math.min(i * 22, 260)}ms`;
+
+    const coverWrap = el('div', 'card-cover');
+    if (item.accent) coverWrap.style.background = item.accent;
+    if (item._cover) {
+      const img = el('img');
+      img.src = item._cover;
+      img.alt = '';
+      img.loading = i < 8 ? 'eager' : 'lazy';
+      img.decoding = 'async';
+      img.width = 300; img.height = 450;
+      coverWrap.appendChild(img);
+    }
+    coverWrap.appendChild(el('span', 'badge', item.type));
+    card.appendChild(coverWrap);
+
+    card.appendChild(el('div', 'card-title', item.title));
+    card.appendChild(el('div', 'card-meta', item.author));
+    card.appendChild(el('div', 'card-time', `${item.year} · ${item.minutes} min`));
+
+    card.addEventListener('click', () => openReader(item));
+    return card;
+  }
+
+  // =========================================================================
+  // Reader
+  // =========================================================================
+  const readerEl = $('#reader');
+  const readerBar = $('#readerbar');
+  const docEl = $('#doc');
+
+  function openReader(item) {
+    clear(docEl);
+
+    // Hero
+    const hero = el('div', 'hero');
+    if (item._cover) {
+      const wrap = el('div', 'hero-cover');
+      const img = el('img');
+      img.src = item._cover;
+      img.alt = '';
+      wrap.appendChild(img);
+      hero.appendChild(wrap);
+    }
+    const txt = el('div', 'hero-txt');
+    txt.appendChild(el('div', 'kicker', `${item.type} · ${item.year}`));
+    txt.appendChild(el('h1', null, item.title));
+    txt.appendChild(el('div', 'byline', item.author));
+    const bits = [`${item.minutes} min read`];
+    if (item.isbn && !/^N\/A/i.test(item.isbn)) bits.push(item.isbn);
+    txt.appendChild(el('div', 'subline', bits.join(' · ')));
+    hero.appendChild(txt);
+    docEl.appendChild(hero);
+
+    if (item.summary) docEl.appendChild(el('p', 'keyline', item.summary));
+
+    // Categories then tags, all clickable as filters
+    const tagList = el('div', 'taglist');
+    for (const cat of item.categories) tagList.appendChild(filterTag(cat, 'cats', cat));
+    for (const tag of item.tags) tagList.appendChild(filterTag(`# ${tag}`, 'tags', tag));
+    docEl.appendChild(tagList);
+
+    // Section navigation
+    const toc = el('nav', 'toc');
+    toc.setAttribute('aria-label', 'Sections');
+    item.sections.forEach((section, i) => {
+      const btn = el('button', i === 0 ? 'on' : null, shortSection(section.h));
+      btn.addEventListener('click', () => {
+        const target = $(`#sec-${i}`);
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+      toc.appendChild(btn);
+    });
+    docEl.appendChild(toc);
+
+    // Body
+    item.sections.forEach((section, i) => {
+      const sec = el('section', 'sec');
+      sec.id = `sec-${i}`;
+      if (section.h) sec.appendChild(el('h2', null, section.h));
+      const prose = el('div', 'prose');
+      for (const block of section.blocks) prose.appendChild(renderBlock(block));
+      sec.appendChild(prose);
+      docEl.appendChild(sec);
+    });
+
+    const foot = el('div', 'doc-foot');
+    foot.appendChild(document.createTextNode(`Added ${item.added} · Status: ${item.status.replace(/_/g, ' ')}`));
+    docEl.appendChild(foot);
+
+    $('#readertitle').textContent = item.title;
+    readerEl.scrollTop = 0;
+    readerEl.classList.add('on');
+    document.body.style.overflow = 'hidden';
+    readerBar.classList.remove('stuck');
+    $('#progress i').style.width = '0%';
+    history.pushState({ reader: true }, '');
+    setupScrollSpy(item.sections.length, toc);
+  }
+
+  function shortSection(heading) {
+    return heading
+      .replace(/^Detailed Chapter Analysis$/, 'Analysis')
+      .replace(/^Relevance to Security, Aviation, and Leadership$/, 'Relevance')
+      .replace(/^Actionable Insights for Leaders$/, 'Actions')
+      .replace(/^Executive Summary$/, 'Summary')
+      .replace(/^Notable Quotes$/, 'Quotes');
+  }
+
+  function filterTag(label, kind, value) {
+    const btn = el('button', 'tag', label);
+    btn.addEventListener('click', () => {
+      S.filters[kind].clear();
+      S.filters[kind].add(value);
+      S.filters.q = '';
+      $('#q').value = '';
+      $('#search').classList.remove('has');
+      closeReader();
+      renderChips();
+      applyFilters();
+      window.scrollTo({ top: 0 });
+    });
+    return btn;
+  }
+
+  /**
+   * Render one block of the typed tree.
+   * Every text node goes through document.createTextNode; nothing is parsed
+   * as markup at any point.
+   */
+  function renderBlock(block) {
+    switch (block[0]) {
+      case 'p': return inlineInto(el('p'), block[1]);
+      case 'q': return inlineInto(el('blockquote'), block[1]);
+      case 'h': return inlineInto(el(`h${Math.min(Math.max(block[1], 2), 4)}`), block[2]);
+      case 'ul':
+      case 'ol': {
+        const list = el(block[0]);
+        for (const item of block[1]) list.appendChild(inlineInto(el('li'), item));
+        return list;
+      }
+      default: return el('p');
+    }
+  }
+
+  function inlineInto(parent, nodes) {
+    for (const node of nodes) {
+      if (typeof node === 'string') {
+        parent.appendChild(document.createTextNode(node));
+      } else if (Array.isArray(node)) {
+        const tag = node[0] === 'b' ? 'strong' : node[0] === 'i' ? 'em' : null;
+        if (tag) parent.appendChild(inlineInto(el(tag), node[1]));
+      }
+    }
+    return parent;
+  }
+
+  let scrollSpy = null;
+  function setupScrollSpy(sectionCount, toc) {
+    if (scrollSpy) scrollSpy.disconnect();
+    const buttons = Array.from(toc.children);
+
+    scrollSpy = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (!entry.isIntersecting) continue;
+        const idx = Number(entry.target.id.replace('sec-', ''));
+        buttons.forEach((b, i) => b.classList.toggle('on', i === idx));
+      }
+    }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+    for (let i = 0; i < sectionCount; i++) {
+      const sec = $(`#sec-${i}`);
+      if (sec) scrollSpy.observe(sec);
+    }
+  }
+
+  function closeReader(silent) {
+    if (!readerEl.classList.contains('on')) return;
+    readerEl.classList.remove('on');
+    document.body.style.overflow = '';
+    if (scrollSpy) { scrollSpy.disconnect(); scrollSpy = null; }
+    if (!silent && history.state?.reader) history.back();
+  }
+
+  readerEl.addEventListener('scroll', () => {
+    const top = readerEl.scrollTop;
+    readerBar.classList.toggle('stuck', top > 40);
+    const max = readerEl.scrollHeight - readerEl.clientHeight;
+    $('#progress i').style.width = `${max > 0 ? Math.min(100, (top / max) * 100) : 0}%`;
+  }, { passive: true });
+
+  window.addEventListener('popstate', () => {
+    if (readerEl.classList.contains('on')) closeReader(true);
+    else closeSheet();
+  });
+
+  // =========================================================================
+  // Sheets
+  // =========================================================================
+  const scrim = $('#scrim');
+  const sheet = $('#sheet');
+
+  function openSheet(title, build) {
+    $('#sheettitle').textContent = title;
+    const body = $('#sheetbody');
+    clear(body);
+    build(body);
+    scrim.classList.add('on');
+    sheet.classList.add('on');
+  }
+
+  function closeSheet() {
+    scrim.classList.remove('on');
+    sheet.classList.remove('on');
+  }
+
+  scrim.addEventListener('click', closeSheet);
+  $('#sheetclose').addEventListener('click', closeSheet);
+
+  function sortSheet(body) {
+    for (const [key, { label }] of Object.entries(SORTS)) {
+      const opt = el('button', `opt${S.sort === key ? ' on' : ''}`);
+      opt.appendChild(icon('i-check', 'tick'));
+      opt.appendChild(document.createTextNode(label));
+      opt.addEventListener('click', () => {
+        S.sort = key;
+        $('#sort').value = key;
+        applyFilters();
+        closeSheet();
+      });
+      body.appendChild(opt);
+    }
+  }
+
+  function topicsSheet(body) {
+    const cloud = el('div', 'tagcloud');
+    for (const [tag, count] of [...facets.tags.entries()].sort(byCountThenName)) {
+      const on = S.filters.tags.has(tag);
+      const btn = el('button', 'tag');
+      if (on) { btn.style.borderColor = 'var(--accent)'; btn.style.color = 'var(--accent)'; }
+      btn.appendChild(document.createTextNode(`${tag} · ${count}`));
+      btn.addEventListener('click', () => {
+        if (S.filters.tags.has(tag)) S.filters.tags.delete(tag); else S.filters.tags.add(tag);
+        applyFilters();
+        closeSheet();
+      });
+      cloud.appendChild(btn);
+    }
+    body.appendChild(cloud);
+  }
+
+  function aboutSheet(body) {
+    const rows = [
+      ['App version', APP_VERSION],
+      ['Library version', S.library?.lib_version || LIB_VERSION],
+      ['Abstracts', String(S.library?.items.length ?? '—')],
+      ['Built', BUILT_AT],
+      ['Encryption', 'AES-256-GCM'],
+      ['Key derivation', 'PBKDF2-HMAC-SHA512'],
+    ];
+    const dl = el('dl');
+    dl.style.margin = '0';
+    for (const [term, value] of rows) {
+      const row = el('div', 'about-row');
+      row.appendChild(el('dt', null, term));
+      row.appendChild(el('dd', null, value));
+      dl.appendChild(row);
+    }
+    body.appendChild(dl);
+
+    const note = el('p', 'about-note',
+      'Abstracts are decrypted in memory on this device and are never sent anywhere. ' +
+      'The copy stored on this device stays encrypted; only the running app holds plaintext.');
+    body.appendChild(note);
+
+    const lockNow = el('button', 'btn ghost');
+    lockNow.style.marginTop = '18px';
+    lockNow.appendChild(icon('i-lock'));
+    lockNow.appendChild(document.createTextNode('Lock now'));
+    lockNow.addEventListener('click', () => { closeSheet(); lock('Locked.'); });
+    body.appendChild(lockNow);
+
+    // Face ID can be turned on or off from here, so a cancelled or failed
+    // enrolment at first unlock is recoverable without locking and starting over.
+    Promise.all([idbGet(WRAP_KEY).catch(() => null), platformAuthenticatorAvailable()])
+      .then(([record, platform]) => {
+        if (!platform) return;
+
+        if (record) {
+          const forget = el('button', 'btn subtle');
+          forget.appendChild(document.createTextNode('Turn off Face ID unlock on this device'));
+          forget.addEventListener('click', async () => {
+            await idbDel(WRAP_KEY);
+            closeSheet();
+            detectBiometric();
+          });
+          body.appendChild(forget);
+          return;
+        }
+
+        const enrol = el('button', 'btn subtle');
+        enrol.appendChild(document.createTextNode('Set up Face ID unlock on this device'));
+        enrol.addEventListener('click', async () => {
+          if (!S.passphrase) { closeSheet(); return; }
+          enrol.disabled = true;
+          enrol.textContent = 'Waiting for Face ID…';
+          try {
+            await enrolBiometric(S.passphrase);
+            closeSheet();
+            detectBiometric();
+            banner('good', 'Face ID unlock is on for this device.');
+          } catch (err) {
+            closeSheet();
+            banner('warn', `Face ID was not set up. ${err.name === 'NotAllowedError'
+              ? 'The prompt was cancelled or timed out.' : err.message}`);
+          }
+        });
+        body.appendChild(enrol);
+      })
+      .catch(() => {});
+  }
+
+  // =========================================================================
+  // Footer, banners, update checking
+  // =========================================================================
+  function updateFooter() {
+    $('#vapp').textContent = `App v${APP_VERSION}`;
+    $('#vlib').textContent = `Lib ${S.library?.lib_version || LIB_VERSION}`;
+
+    // The version inside the ciphertext is authenticated; the one in
+    // manifest.json is not. A mismatch means the server is serving a manifest
+    // that disagrees with the sealed payload -- worth flagging (brief 3.3).
+    const m = S.serverManifest;
+    if (m && S.library && m.lib_version && m.lib_version !== S.library.lib_version) {
+      $('#vlib').classList.add('mismatch');
+      $('#vlib').title = `Server manifest claims ${m.lib_version}`;
+    }
+  }
+
+  function banner(kind, text, actionLabel, action) {
+    const host = $('#banners');
+    const div = el('div', `banner ${kind}`);
+    div.appendChild(icon(kind === 'danger' ? 'i-alert' : kind === 'good' ? 'i-check' : 'i-info'));
+    div.appendChild(el('span', null, text));
+    if (actionLabel) {
+      const btn = el('button', 'act', actionLabel);
+      btn.addEventListener('click', action);
+      div.appendChild(btn);
+    }
+    host.appendChild(div);
+    return div;
+  }
+
+  async function refreshInBackground() {
+    const manifest = await fetchManifest();
+    if (!manifest) return;
+    S.serverManifest = manifest;
+    updateFooter();
+
+    if (manifest.app_version && manifest.app_version !== APP_VERSION) {
+      banner('warn', `Version ${manifest.app_version} of the app is available.`, 'Reload', () => {
+        location.reload();
+      });
+    }
+
+    if (manifest.lib_version && S.library && manifest.lib_version !== S.library.lib_version) {
+      banner('warn', `A newer library (${manifest.lib_version}) is available.`, 'Update', async () => {
+        try {
+          const bytes = await refreshCiphertext();
+          if (!bytes || !S.passphrase) { location.reload(); return; }
+          const { index, blobRegion } = await openContainer(bytes, S.passphrase);
+          for (const url of S.covers) URL.revokeObjectURL(url);
+          mountLibrary(index, blobRegion);
+          clear($('#banners'));
+        } catch {
+          location.reload();
+        }
+      });
+    }
+  }
+
+  // =========================================================================
+  // Wiring
+  // =========================================================================
+  function wire() {
+    unlockBtn.addEventListener('click', () => doUnlock(pwInput.value, { enrol: true }));
+    pwInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') doUnlock(pwInput.value, { enrol: true });
+    });
+
+    $('#reveal').addEventListener('click', () => {
+      const showing = pwInput.type === 'text';
+      pwInput.type = showing ? 'password' : 'text';
+      $('#reveal').setAttribute('aria-label', showing ? 'Show passphrase' : 'Hide passphrase');
+      $('#revealicon').setAttribute('href', showing ? '#i-eye' : '#i-eyeoff');
+      pwInput.focus();
+    });
+
+    bioBtn.addEventListener('click', async () => {
+      try {
+        setBusy('Waiting for Face ID…');
+        const passphrase = await unlockBiometric();
+        await doUnlock(passphrase);
+      } catch (err) {
+        setMsg(err.name === 'NotAllowedError' ? 'Biometric unlock was cancelled.' : err.message, 'err');
+      }
+    });
+
+    const q = $('#q');
+    let debounce;
+    q.addEventListener('input', () => {
+      $('#search').classList.toggle('has', q.value.length > 0);
+      clearTimeout(debounce);
+      debounce = setTimeout(() => { S.filters.q = q.value; applyFilters(); }, 110);
+    });
+    $('#qclear').addEventListener('click', () => {
+      q.value = ''; S.filters.q = '';
+      $('#search').classList.remove('has');
+      applyFilters(); q.focus();
+    });
+
+    $('#sort').addEventListener('change', (e) => { S.sort = e.target.value; applyFilters(); });
+    $('#topics').addEventListener('click', () => openSheet('Topics', topicsSheet));
+    $('#about').addEventListener('click', () => openSheet('About', aboutSheet));
+    $('#lockbtn').addEventListener('click', () => lock('Locked.'));
+    $('#back').addEventListener('click', () => closeReader());
+
+    $('#theme').addEventListener('click', () => {
+      const root = document.documentElement;
+      const isDark = getComputedStyle(root).colorScheme.includes('dark');
+      root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+      try { localStorage.setItem('ah-theme', isDark ? 'light' : 'dark'); } catch { /* private mode */ }
+    });
+
+    // Auto-lock on inactivity and when the app goes to the background.
+    for (const evt of ['pointerdown', 'keydown', 'scroll']) {
+      window.addEventListener(evt, armAutoLock, { passive: true });
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') armAutoLock();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        if (sheet.classList.contains('on')) closeSheet();
+        else if (readerEl.classList.contains('on')) closeReader();
+      }
+      if (e.key === '/' && S.library && !readerEl.classList.contains('on')) {
+        const active = document.activeElement;
+        if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) return;
+        e.preventDefault();
+        q.focus();
+      }
+    });
+  }
+
+  // =========================================================================
+  // Boot
+  // =========================================================================
+  async function boot() {
+    try {
+      const saved = localStorage.getItem('ah-theme');
+      if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+    } catch { /* private mode: fall back to the media query */ }
+
+    // Populate the sort control from the single source of truth.
+    const sortSel = $('#sort');
+    for (const [key, { label }] of Object.entries(SORTS)) {
+      const opt = el('option', null, label);
+      opt.value = key;
+      sortSel.appendChild(opt);
+    }
+    sortSel.value = S.sort;
+
+    wire();
+    await detectBiometric();
+
+    if (!window.isSecureContext) {
+      setMsg('This page is not in a secure context, so decryption is unavailable. Use HTTPS.', 'err');
+      unlockBtn.disabled = true;
+      return;
+    }
+
+    // Start a conditional refresh immediately, in parallel with the user
+    // reaching for Face ID. When nothing has changed the server answers 304 and
+    // this costs a few hundred bytes; when a new library is out, the download
+    // overlaps the unlock instead of following it. Offline, it fails quietly
+    // and the cached copy is used.
+    bootRefresh = refreshCiphertext().catch(() => null);
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js').catch(() => {});
+    }
+
+    pwInput.focus();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+  else boot();
+})();
+</script>
+</body>
+</html>

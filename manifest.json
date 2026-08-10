@@ -1,0 +1,23 @@
+{
+  "name": "Abstract Hub",
+  "short_name": "Abstracts",
+  "description": "An encrypted, offline reader for book and report abstracts.",
+  "id": "/abstract-hub/",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#0c0e11",
+  "theme_color": "#0c0e11",
+  "categories": ["books", "education", "productivity"],
+  "prefer_related_applications": false,
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "app_version": "1.0",
+  "lib_version": "2026v1",
+  "built_at": "2026-08-10T17:17:19Z",
+  "library_sha256": "4fb61c290e0fbaeeb48f09a6e1ac70fd90db3eae0729ae9c964df036082471be"
+}
