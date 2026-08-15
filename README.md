@@ -3,7 +3,7 @@
 A private reading library.
 
 <!-- VERSION:START -->
-**Version:** App `v1.0` · Library `2026v1`
+**Version:** App `v1.1` · Library `2026v2`
 <!-- VERSION:END -->
 
 ---
