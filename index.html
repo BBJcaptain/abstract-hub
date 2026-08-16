@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-1x0FFToj9n9IPXFFlU9JcRLFl1U4Q+LOp2Y8UG6DLKA='; style-src 'sha256-qKAEx45YImfdYJYAsMsptfqofQeJjrOhrlPhcq4PL6w='; img-src 'self' blob:; connect-src 'self' https://api.country.is; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-NzcDM4WwT7LwF1IVYFyU7hliF/0HgnLInBv4fZHQLog='; style-src 'sha256-WtL/PZTm667xYmfkUz1b6axlzFATOiqUOOtZBIYYo4A='; img-src 'self' blob:; connect-src 'self' https://api.country.is; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Abstract Hub</title>
@@ -451,6 +451,35 @@ img { display: block; max-width: 100%; }
   margin-left: 5px;
   font-size: 11.5px;
 }
+
+/* Special tag: a distinct, labelled entry point (e.g. SkyRay Intelligence)
+   that opens a bundled full-report page rather than filtering the library. */
+.specialtags { display: flex; gap: 7px; margin-top: 8px; }
+.special-tag {
+  flex: none;
+  padding: 6px 13px 6px 24px;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  position: relative;
+  transition: all .14s var(--ease);
+}
+.special-tag::before {
+  content: "";
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  width: 7px;
+  height: 7px;
+  margin-top: -3.5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.special-tag:active { transform: scale(.96); }
 
 /* Result summary bar --------------------------------------------------- */
 .bar {
@@ -1091,12 +1120,12 @@ img { display: block; max-width: 100%; }
   <header class="topbar">
     <div class="topbar-row">
       <div class="brand">Abstract&nbsp;<em>Hub</em></div>
-      <button id="topics" class="icon-btn" type="button" aria-label="Browse topics"><svg aria-hidden="true"><use href="#i-windsock"/></svg></button>
-      <button id="quotes" class="icon-btn" type="button" aria-label="Quotations"><svg aria-hidden="true"><use href="#i-quill"/></svg></button>
       <button id="radar" class="icon-btn" type="button" aria-label="Research Radar"><svg class="radar-spin" aria-hidden="true"><use href="#i-radar"/></svg></button>
+      <button id="quotes" class="icon-btn" type="button" aria-label="Quotations"><svg aria-hidden="true"><use href="#i-quill"/></svg></button>
+      <button id="topics" class="icon-btn" type="button" aria-label="Browse topics"><svg aria-hidden="true"><use href="#i-windsock"/></svg></button>
+      <button id="king" class="icon-btn" type="button" aria-label="Reputation scan"><svg aria-hidden="true"><use href="#i-king"/></svg></button>
       <button id="theme" class="icon-btn" type="button" aria-label="Toggle dark mode"><svg aria-hidden="true"><use href="#i-theme"/></svg></button>
       <button id="about" class="icon-btn" type="button" aria-label="About this library"><svg aria-hidden="true"><use href="#i-info"/></svg></button>
-      <button id="king" class="icon-btn" type="button" aria-label="King"><svg aria-hidden="true"><use href="#i-king"/></svg></button>
       <button id="lockbtn" class="icon-btn" type="button" aria-label="Lock the library"><svg aria-hidden="true"><use href="#i-lock"/></svg></button>
     </div>
 
@@ -1108,6 +1137,7 @@ img { display: block; max-width: 100%; }
                autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="search">
         <button id="qclear" class="clear" type="button" aria-label="Clear search"><svg aria-hidden="true"><use href="#i-x"/></svg></button>
       </div>
+      <div class="specialtags"><button id="skyray" class="special-tag" type="button">SkyRay Intelligence</button></div>
       <div id="chips" class="chiprow" role="group" aria-label="Filter by type and category"></div>
     </div>
   </header>
@@ -1176,9 +1206,9 @@ img { display: block; max-width: 100%; }
 
 (() => {
   // ---- Build-injected constants (replaced by build-library.js) -----------
-  const APP_VERSION = '1.2';
-  const LIB_VERSION = '2026v3';
-  const BUILT_AT = '2026-08-15T07:13:50Z';
+  const APP_VERSION = '1.3';
+  const LIB_VERSION = '2026v4';
+  const BUILT_AT = '2026-08-16T09:54:10Z';
   const ENC_PATH = 'library.enc';
 
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -2357,8 +2387,17 @@ img { display: block; max-width: 100%; }
       renderMarkdownInto(wrap, page && page.markdown);
       body.appendChild(wrap);
     }));
-    $('#king').addEventListener('click', () => openSheet('King', (body) => {
-      body.appendChild(el('p', null, 'Coming soon.'));
+    $('#king').addEventListener('click', () => openSheet('Reputation Scan', (body) => {
+      const page = S.library && S.library.pages && S.library.pages.reputation;
+      const wrap = el('div', 'mdpage');
+      renderMarkdownInto(wrap, page && page.markdown);
+      body.appendChild(wrap);
+    }));
+    $('#skyray').addEventListener('click', () => openSheet('SkyRay Intelligence', (body) => {
+      const page = S.library && S.library.pages && S.library.pages.skyray;
+      const wrap = el('div', 'mdpage');
+      renderMarkdownInto(wrap, page && page.markdown);
+      body.appendChild(wrap);
     }));
     $('#about').addEventListener('click', () => openSheet('About', aboutSheet));
     $('#lockbtn').addEventListener('click', () => lock('Locked.'));
