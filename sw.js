@@ -14,7 +14,7 @@
    ========================================================================== */
 'use strict';
 
-const VERSION = '1.9';
+const VERSION = '1.10';
 const CACHE = `abstract-hub-shell-v${VERSION}`;
 
 /* The shell. Everything needed to boot to the lock screen offline. */
@@ -49,9 +49,34 @@ self.addEventListener('fetch', (event) => {
   // The encrypted library is the app's business, not the cache's.
   if (url.pathname.endsWith('/library.enc')) return;
 
-  /* Stale-while-revalidate: paint instantly from cache, quietly refresh behind
-     it. A shell update therefore lands on the next launch, and the in-app
-     version banner tells the user when that has happened. */
+  const isNavigation = request.mode === 'navigate'
+    || url.pathname.endsWith('/index.html')
+    || url.pathname.endsWith('/');
+
+  if (isNavigation) {
+    /* Network-first for the app shell: when online, always load the newest
+       index.html so a published update lands the moment the app is reopened
+       (no more stuck-on-an-old-version). Falls back to the cached shell when
+       offline, so airborne reading still boots with no network. */
+    event.respondWith((async () => {
+      const cache = await caches.open(CACHE);
+      try {
+        const fresh = await fetch(request);
+        if (fresh && fresh.ok && fresh.type === 'basic') {
+          cache.put('./index.html', fresh.clone()).catch(() => {});
+        }
+        return fresh;
+      } catch {
+        return (await cache.match('./index.html'))
+          || (await cache.match(request, { ignoreSearch: true }))
+          || new Response('Offline', { status: 503, statusText: 'Offline' });
+      }
+    })());
+    return;
+  }
+
+  /* Stale-while-revalidate for the rest of the shell (icon, manifest): paint
+     instantly from cache, quietly refresh behind it. */
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const cached = await cache.match(request, { ignoreSearch: true });
@@ -70,11 +95,6 @@ self.addEventListener('fetch', (event) => {
     const fresh = await network;
     if (fresh) return fresh;
 
-    // Offline with nothing cached: fall back to the shell for navigations.
-    if (request.mode === 'navigate') {
-      const shell = await cache.match('./index.html');
-      if (shell) return shell;
-    }
     return new Response('Offline', { status: 503, statusText: 'Offline' });
   })());
 });
