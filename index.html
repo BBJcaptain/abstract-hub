@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-52G2p7iqAnrnHI6T8rP7Uop1WdRQEw1S1UU8Yb5UaRw='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-UbNXw2VWNntCxE1a512i7FMJjmNG1aUdRCRHQK3Xv1k='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Abstract Hub</title>
@@ -1118,6 +1118,10 @@ img { display: block; max-width: 100%; }
     <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/>
     </symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+      <path d="M21 4v5h-5"/>
+    </symbol>
     <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="m4.5 12.5 5 5 10-11"/>
     </symbol>
@@ -1204,6 +1208,7 @@ img { display: block; max-width: 100%; }
       <button id="king" class="icon-btn" type="button" aria-label="Reputation scan"><svg aria-hidden="true"><use href="#i-king"/></svg></button>
       <button id="theme" class="icon-btn" type="button" aria-label="Toggle dark mode"><svg aria-hidden="true"><use href="#i-theme"/></svg></button>
       <button id="about" class="icon-btn" type="button" aria-label="About this library"><svg aria-hidden="true"><use href="#i-info"/></svg></button>
+      <button id="refresh" class="icon-btn" type="button" aria-label="Refresh for the latest version"><svg aria-hidden="true"><use href="#i-refresh"/></svg></button>
       <button id="lockbtn" class="icon-btn" type="button" aria-label="Lock the library"><svg aria-hidden="true"><use href="#i-lock"/></svg></button>
     </div>
 
@@ -1285,9 +1290,9 @@ img { display: block; max-width: 100%; }
 
 (() => {
   // ---- Build-injected constants (replaced by build-library.js) -----------
-  const APP_VERSION = '1.11';
+  const APP_VERSION = '1.12';
   const LIB_VERSION = '2026v6';
-  const BUILT_AT = '2026-08-26T08:48:38Z';
+  const BUILT_AT = '2026-08-26T09:00:29Z';
   const ENC_PATH = 'library.enc';
 
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -2543,6 +2548,7 @@ img { display: block; max-width: 100%; }
     $('#radar').addEventListener('click', () => openSheet('Research Radar', (body) => renderPage(body, S.library && S.library.pages && S.library.pages.summary)));
     $('#king').addEventListener('click', () => openSheet('Reputation Scan', (body) => renderPage(body, S.library && S.library.pages && S.library.pages.reputation)));
     $('#about').addEventListener('click', () => openSheet('About', aboutSheet));
+    $('#refresh').addEventListener('click', () => location.reload());
     $('#lockbtn').addEventListener('click', () => lock('Locked.'));
     $('#back').addEventListener('click', () => closeReader());
 
