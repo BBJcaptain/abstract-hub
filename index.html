@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-WQtt8wNl174hPECmKTxK3kSBNsqOZacOI5aYJMF3VH4='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-j/CKSrZ7uSorUOpBnCTtQDXyNAxbDzGbw7yynckQ51k='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Abstract Hub</title>
@@ -1325,9 +1325,9 @@ img { display: block; max-width: 100%; }
 
 (() => {
   // ---- Build-injected constants (replaced by build-library.js) -----------
-  const APP_VERSION = '1.13';
-  const LIB_VERSION = '2026v7';
-  const BUILT_AT = '2026-09-01T10:17:40Z';
+  const APP_VERSION = '1.14';
+  const LIB_VERSION = '2026v8';
+  const BUILT_AT = '2026-09-01T10:42:13Z';
   const ENC_PATH = 'library.enc';
 
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -2485,13 +2485,25 @@ img { display: block; max-width: 100%; }
     return div;
   }
 
+  // Compare library versions of the form "YYYYvN". Returns true only when
+  // `candidate` is strictly newer than `current`, so a stale-while-revalidate
+  // manifest that lags the loaded (sealed) library never shows a bogus
+  // "newer library available" banner. Unparseable versions fall back to a
+  // plain inequality so a genuine change is still surfaced.
+  function libIsNewer(candidate, current) {
+    const parse = (v) => { const m = /^(\d{4})v(\d+)$/.exec(String(v || '')); return m ? [+m[1], +m[2]] : null; };
+    const a = parse(candidate), b = parse(current);
+    if (!a || !b) return candidate !== current;
+    return a[0] > b[0] || (a[0] === b[0] && a[1] > b[1]);
+  }
+
   async function refreshInBackground() {
     const manifest = await fetchManifest();
     if (!manifest) return;
     S.serverManifest = manifest;
     updateFooter();
 
-    if (manifest.lib_version && S.library && manifest.lib_version !== S.library.lib_version) {
+    if (manifest.lib_version && S.library && libIsNewer(manifest.lib_version, S.library.lib_version)) {
       banner('warn', `A newer library (${manifest.lib_version}) is available.`, 'Update', async () => {
         try {
           const bytes = await refreshCiphertext();
