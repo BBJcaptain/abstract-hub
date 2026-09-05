@@ -14,7 +14,7 @@
    ========================================================================== */
 'use strict';
 
-const VERSION = '1.15';
+const VERSION = '1.16';
 const CACHE = `abstract-hub-shell-v${VERSION}`;
 
 /* The shell. Everything needed to boot to the lock screen offline. */
