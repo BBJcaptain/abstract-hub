@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-xb0rqUoH0FAYD4TMg/hacaO7jg68sBqkaBPqf1WggcU='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'sha256-05yFMnGrPQoVIeQ8PlUildXbj22b4rV/bvZbPz5jPmI='; style-src 'unsafe-inline'; img-src 'self' blob: data:; connect-src 'self' https://api.country.is; frame-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'">
 <meta name="referrer" content="no-referrer">
 <meta name="robots" content="noindex, nofollow, noarchive">
 <title>Abstract Hub</title>
@@ -1325,9 +1325,9 @@ img { display: block; max-width: 100%; }
 
 (() => {
   // ---- Build-injected constants (replaced by build-library.js) -----------
-  const APP_VERSION = '1.16';
-  const LIB_VERSION = '2026v9';
-  const BUILT_AT = '2026-09-05T02:28:22Z';
+  const APP_VERSION = '1.17';
+  const LIB_VERSION = '2026v10';
+  const BUILT_AT = '2026-09-12T15:03:56Z';
   const ENC_PATH = 'library.enc';
 
   const SVGNS = 'http://www.w3.org/2000/svg';
@@ -2586,7 +2586,34 @@ img { display: block; max-width: 100%; }
       body.appendChild(wrap);
     };
     $('#quotes').addEventListener('click', () => openSheet('Quotes', (body) => renderPage(body, S.library && S.library.pages && S.library.pages.quotes)));
-    $('#radar').addEventListener('click', () => openSheet('Research Radar', (body) => renderPage(body, S.library && S.library.pages && S.library.pages.summary)));
+    $('#radar').addEventListener('click', () => openSheet('Research Radar', (body) => {
+      const entries = S.library && S.library.pages && S.library.pages.research;
+      if (Array.isArray(entries) && entries.length) {
+        const e0 = entries[0];
+        if (e0 && e0.date) {
+          const days = Math.floor((Date.now() - new Date(`${e0.date}T00:00:00`).getTime()) / 86400000);
+          const rel = days <= 0 ? 'today' : days === 1 ? 'yesterday' : `${days} days ago`;
+          const cap = el('div', 'page-age');
+          cap.appendChild(document.createTextNode(`Latest radar ${e0.label} · ${rel}`));
+          body.appendChild(cap);
+        }
+        entries.forEach((e, i) => {
+          const d = document.createElement('details');
+          d.className = 'mb-entry';
+          if (i === 0) d.open = true;
+          const s = document.createElement('summary');
+          s.className = 'mb-date';
+          s.textContent = e.label || e.date;
+          d.appendChild(s);
+          const wrap = el('div', 'mdpage');
+          renderMarkdownInto(wrap, e.markdown);
+          d.appendChild(wrap);
+          body.appendChild(d);
+        });
+      } else {
+        renderPage(body, S.library && S.library.pages && S.library.pages.summary);
+      }
+    }));
     $('#king').addEventListener('click', () => openSheet('Reputation Scan', (body) => renderPage(body, S.library && S.library.pages && S.library.pages.reputation)));
     $('#morning').addEventListener('click', () => openSheet('Morning Brief', (body) => {
       const entries = S.library && S.library.pages && S.library.pages.morningbrief;
