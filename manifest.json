@@ -16,8 +16,8 @@
     { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
     { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
-  "app_version": "1.19",
-  "lib_version": "2026v12",
-  "built_at": "2026-09-21T08:58:31Z",
-  "library_sha256": "894c3130a4f75b132c71dd1c8413724d563ac94787555e6a576a11beb9615751"
+  "app_version": "1.20",
+  "lib_version": "2026v13",
+  "built_at": "2026-09-21T18:45:59Z",
+  "library_sha256": "97a0f72d41b56ea5dc90d58b49a7bf9cdc70667d63a0d5f015162ef080e8c7da"
 }
